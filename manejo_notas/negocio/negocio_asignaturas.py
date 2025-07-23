@@ -68,13 +68,56 @@ def agregar_asignatura():
 
     mostrar_listado_asignaturas()
 
-# UPDATE
 def actualizar_asignatura():
     mostrar_listado_asignaturas()
-    busqueda = input('Ingrese asignatura a buscar: ')
-    indice = indice_asignatura(busqueda)
-    nuevo_dato = input(f'Ingrese nuevo nombre para asignatura {asignaturas[indice]}: ')
-    asignaturas[indice] = nuevo_dato
+    try:
+        id_asignatura = int(input('Ingrese el ID de la asignatura a actualizar: '))
+    except ValueError:
+        print("ID inválido.")
+        return
 
-    crear_data('asignaturas.py','asignaturas',asignaturas)
+    # Verificar si existe la asignatura con ese ID
+    consulta_verificacion = "SELECT * FROM asignaturas WHERE id = %s"
+    resultado = leer_datos(consulta_verificacion, (id_asignatura,))
+    if not resultado:
+        print("No existe una asignatura con ese ID.")
+        return
+
+    nuevo_codigo = input('Ingrese el nuevo código de la asignatura: ').upper()
+    nuevo_nombre = input('Ingrese el nuevo nombre de la asignatura: ').title()
+    nueva_descripcion = input('Ingrese la nueva descripción de la asignatura: ')
+
+    consulta = '''
+        UPDATE asignaturas
+        SET codigo_asignatura = %s, nombre_asignatura = %s, descripcion_asignatura = %s
+        WHERE id = %s
+    '''
+    valores = (nuevo_codigo, nuevo_nombre, nueva_descripcion, id_asignatura)
+    insertar_datos(consulta, valores)
+    print("Asignatura actualizada correctamente.")
     mostrar_listado_asignaturas()
+
+def eliminar_asignatura():
+    while True:
+        mostrar_listado_asignaturas()
+        try:
+            id_asignatura = int(input('Ingrese el ID de la asignatura a eliminar: '))
+        except ValueError:
+            print("ID inválido. Intente nuevamente.")
+            continue
+
+        consulta_verificacion = "SELECT * FROM asignaturas WHERE id = %s"
+        resultado = leer_datos(consulta_verificacion, (id_asignatura,))
+        if not resultado:
+            print("No existe una asignatura con ese ID. Intente nuevamente.")
+            continue
+
+        confirmacion = input("¿Está seguro que desea eliminar la asignatura? (s/n): ").lower()
+        if confirmacion == 's':
+            consulta = "DELETE FROM asignaturas WHERE id = %s"
+            insertar_datos(consulta, (id_asignatura,))
+            print("Asignatura eliminada correctamente.")
+        else:
+            print("Eliminación cancelada.")
+        mostrar_listado_asignaturas()
+        break

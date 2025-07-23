@@ -14,7 +14,7 @@ INSERT INTO opciones_menu (opcion_menu,numero_opcion,tipo_menu) VALUES
 ('Gestión Docentes','2',1),
 ('Salir','0',1),
 ('Listado Asignaturas','1',2),
-('Agregar Asignatura','21',2),
+('Agregar Asignatura','2',2),
 ('Editar Asignaturas','3',2),
 ('Eliminar Asignatura','4',2),
 ('Salir','0',2),

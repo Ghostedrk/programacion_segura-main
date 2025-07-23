@@ -20,13 +20,16 @@ def generar_conexion():
         conexion.close()
 
 
-def leer_datos(consulta):
+def leer_datos(consulta, parametros=None):
     conexion = generar_conexion()
     if conexion and conexion.is_connected():
         cursor = conexion.cursor()
-        if cursor != None:
+        if cursor is not None:
             try:
-                cursor.execute(consulta)
+                if parametros:
+                    cursor.execute(consulta, parametros)
+                else:
+                    cursor.execute(consulta)
                 resultado = cursor.fetchall()
                 return resultado
             except Error as error_ejecucion:
